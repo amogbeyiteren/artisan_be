@@ -17,5 +17,7 @@ router.get('/client/:client_id', appointmentController.listAppointmentsForClient
 // List all appointments for an artisan
 router.get('/artisan/:artisan_id', appointmentController.listAppointmentsForArtisan);
 
+router.patch('/appointments/:appointment_id', appointmentController.completeAppointment);
+
 
 module.exports = router;

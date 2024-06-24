@@ -162,3 +162,24 @@ exports.listAppointmentsForArtisan = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
+// Controller to handle marking an appointment as complete
+exports.completeAppointment = async (req, res) => {
+  const { appointment_id } = req.params;
+
+  try {
+    const appointment = await Appointment.findByIdAndUpdate(
+      appointment_id,
+      { iscomplete: true },
+      { new: true } // Return the updated document
+    );
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    res.status(200).json(appointment);
+  } catch (error) {
+    console.error('Error completing appointment:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

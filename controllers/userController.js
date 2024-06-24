@@ -162,6 +162,7 @@ exports.editUserProfile = async (req, res) => {
     const userId = req.params.id;
     const { email, fname, lname, password, user_type, mobile_number, address, city, state } = req.body;
 
+
     // Upload new profile picture if provided
     let pictureUrl = '';
     if (req.file) {
