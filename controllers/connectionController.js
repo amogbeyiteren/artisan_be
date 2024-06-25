@@ -2,7 +2,7 @@ const Connection = require('../models/connection');
 const User = require('../models/user');
 
 // Create Connection
-const createConnection = async (req, res) => {
+exports.createConnection = async (req, res) => {
   try {
     const { client_id, artisan_id } = req.body;
 
@@ -21,7 +21,7 @@ const createConnection = async (req, res) => {
   }
 };
 
-module.exports = createConnection;
+
 
 // Delete Connection
 exports.deleteConnection = async (req, res) => {
