@@ -3,11 +3,11 @@ const Multer = require('multer');
 const format = require('util').format;
 const Portfolio = require('../models/portfolio');
 require('dotenv').config();
-
+const path = require('path'); 
 // Configuration for Google Cloud Storage
 const storage = new Storage({
   projectId: process.env.FIREBASE_PROJECT_ID,
-  keyFilename: require("../firebase_service_account.json")
+  keyFilename:  path.join(__dirname, '../firebase_service_account.json')
 });
 firebase_bucket_url = process.env.FIREBASE_BUCKET_URL
 
@@ -41,10 +41,12 @@ const uploadImageToStorage = (file) => {
     });
 
     blobStream.on('error', (error) => {
+      console.log(error)
       reject('Something is wrong! Unable to upload at the moment.');
     });
 
-    blobStream.on('finish', () => {
+    blobStream.on('finish', async() => {
+      await fileUpload.makePublic();
       // The public URL can be used to directly access the file via HTTP.
       const url = format(`https://storage.googleapis.com/${bucket.name}/${fileUpload.name}`);
       resolve(url);
@@ -69,6 +71,7 @@ exports.createPortfolio = async (req, res) => {
     await portfolio.save();
     res.status(201).send('Portfolio created');
   } catch (error) {
+    console.log(error)
     res.status(400).send(error.message);
   }
 };
@@ -107,6 +110,18 @@ exports.deletePortfolio = async (req, res) => {
     await Portfolio.findByIdAndDelete(req.params.portfolio_id);
     res.send('Portfolio deleted');
   } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+// View Portfolios by User ID
+exports.viewPortfoliosByUser = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+    const portfolios = await Portfolio.find({ user_id });
+    res.json(portfolios);
+  } catch (error) {
+    console.log(error);
     res.status(400).send(error.message);
   }
 };

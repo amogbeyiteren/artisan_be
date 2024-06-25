@@ -12,8 +12,9 @@ const multer = Multer({
 
 const router = express.Router();
 
-router.post('/portfolios', multer.single('attachment'), portfolioController.createPortfolio);
+router.post('/', multer.single('attachment'), portfolioController.createPortfolio);
 router.put('/portfolios/:portfolio_id', multer.single('attachment'), portfolioController.editPortfolio);
 router.delete('/portfolios/:portfolio_id', portfolioController.deletePortfolio);
+router.get('/:user_id', portfolioController.viewPortfoliosByUser);
 
 module.exports = router;
