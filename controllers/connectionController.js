@@ -2,16 +2,26 @@ const Connection = require('../models/connection');
 const User = require('../models/user');
 
 // Create Connection
-exports.createConnection = async (req, res) => {
+const createConnection = async (req, res) => {
   try {
-    const { client_id, artisan_id} = req.body;
-    const connection = new Connection({ client_id, artisan_id});
+    const { client_id, artisan_id } = req.body;
+
+    // Check if the connection already exists
+    const existingConnection = await Connection.findOne({ client_id, artisan_id });
+    if (existingConnection) {
+      return res.status(409).send('Connection already exists');
+    }
+
+    // Create a new connection
+    const connection = new Connection({ client_id, artisan_id });
     await connection.save();
     res.status(201).send('Connection created');
   } catch (error) {
     res.status(400).send(error.message);
   }
 };
+
+module.exports = createConnection;
 
 // Delete Connection
 exports.deleteConnection = async (req, res) => {
